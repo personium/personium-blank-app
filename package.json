@@ -1,0 +1,25 @@
+{
+  "name": "personium-blank-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prebuild": "mkdir dist",
+    "build-bar": "gulp build_bar"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yoh1496/personium-blank-app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yoh1496/personium-blank-app/issues"
+  },
+  "homepage": "https://github.com/yoh1496/personium-blank-app#readme",
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-zip": "^5.0.0"
+  }
+}
