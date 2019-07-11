@@ -65,3 +65,4 @@ src/bar/00_meta/90_rootprops.xml
 
 dist
 build
+config.js
