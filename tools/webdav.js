@@ -39,9 +39,9 @@ class PersoniumWebdavClient {
     const defaultOption = {
       overwrite: true,
       onUploadProgress: console.log,
-      // headers: {
-      //   'Content-Type': mime.lookup(dstPath) || 'application/octet-stream',
-      // },
+      headers: {
+        'Content-Type': mime.lookup(dstPath) || 'application/octet-stream',
+      },
     };
     const _options = Object.assign({}, defaultOption, options);
     return readAsync(srcPath).then(buff => 
