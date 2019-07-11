@@ -64,3 +64,4 @@ src/bar/00_meta/00_manifest.json
 src/bar/00_meta/90_rootprops.xml
 
 dist
+build
