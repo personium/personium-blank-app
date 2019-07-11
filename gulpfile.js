@@ -97,9 +97,29 @@ gulp.task('deploy', () => {
     return Promise.all(config.personium.DIRECTORY_MAPPING.map(mapping => {
       if (mapping.resourceType === 'engine') {
         return deployEngine(client, path.join('build', mapping.dstDir), mapping.dstDir);
+      } else if(mapping.resourceType === 'staticfile') {
+        const { getFiles } = require('./tools/directories');
+
+        return getFiles(path.join('build', mapping.dstDir)).then(contents => 
+          Promise.all(
+            contents.map(content => {
+              const collectionPath = path.join('/__/', mapping.dstDir);
+              const dstPath = path.join(collectionPath, content.filename);
+              console.log(`file upload: ${content.filepath} -> ${dstPath}`);
+              return client.putFile(dstPath, content.filepath);
+            })
+          ));
       } else {
         return deployCollection(client, path.join('build', mapping.dstDir), mapping.dstDir); 
       }
     }));
   })();
 });
+
+const webpack = require('webpack-stream');
+
+gulp.task('webpack', () => {
+  return gulp.src('src/app/frontend/index.js')
+    .pipe(webpack(require('./webpack.config')))
+    .pipe(gulp.dest('build/public'));
+})
