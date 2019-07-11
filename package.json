@@ -1,0 +1,52 @@
+{
+  "name": "personium-blank-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prebuild": "gulp copy_statics",
+    "build-bar": "gulp build_bar",
+    "build": "gulp webpack",
+    "deploy": "gulp deploy"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yoh1496/personium-blank-app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yoh1496/personium-blank-app/issues"
+  },
+  "homepage": "https://github.com/yoh1496/personium-blank-app#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^10.0.2",
+    "babel-loader": "^7.1.5",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "eslint": "^6.0.1",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-react": "^7.14.2",
+    "gulp": "^4.0.2",
+    "gulp-zip": "^5.0.0",
+    "merge-stream": "^2.0.0",
+    "mime-types": "^2.1.24",
+    "prettier": "^1.18.2",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4",
+    "tunnel": "0.0.6",
+    "webdav": "https://github.com/yoh1496/webdav-client.git#feature/additional_body",
+    "webpack": "^4.35.3",
+    "webpack-stream": "^5.2.1",
+    "xml-js": "^1.6.11"
+  },
+  "dependencies": {
+    "babel-preset-env": "^1.7.0"
+  }
+}
