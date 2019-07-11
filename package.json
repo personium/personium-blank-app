@@ -23,6 +23,7 @@
     "gulp": "^4.0.2",
     "gulp-zip": "^5.0.0",
     "merge-stream": "^2.0.0",
+    "mime-types": "^2.1.24",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
     "tunnel": "0.0.6",

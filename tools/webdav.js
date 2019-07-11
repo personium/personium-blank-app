@@ -1,4 +1,5 @@
 const webdav = require('webdav');
+const mime = require('mime-types');
 const { agent } = require('./net');
 const path = require('path').posix;
 const fs = require('fs');
@@ -34,10 +35,22 @@ class PersoniumWebdavClient {
     );
   }
 
-  putFile(dstPath, srcPath) {
-    return readAsync(srcPath).then(buff => {
-      return this.client.putFileContents(dstPath, buff, {overwrite:true, onUploadProgress: console.log});
-    });
+  putFile(dstPath, srcPath, options={}) {
+    const defaultOption = {
+      overwrite: true,
+      onUploadProgress: console.log,
+      // headers: {
+      //   'Content-Type': mime.lookup(dstPath) || 'application/octet-stream',
+      // },
+    };
+    const _options = Object.assign({}, defaultOption, options);
+    return readAsync(srcPath).then(buff => 
+      this.client.putFileContents(
+        dstPath,
+        buff,
+        _options,
+      )
+    );
   }
 
   putFileToEngine(enginePath, srcFile, dstFilename) {
