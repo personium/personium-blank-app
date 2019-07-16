@@ -2,13 +2,17 @@
 
 React.jsを使用したPersoniumアプリを開発するためのテンプレートです。
 
+本コードを使用することで、「Personiumを使ったアプリ」ではなく「Personiumアプリ」を構築することが可能です。
+
+[「Personium アプリ」と「Personium を使ったアプリ」](https://personium.io/docs/ja/app-developer/)
+
 ## 手順
 
 ### 設定ファイルの更新
 
 #### ビルド・デプロイ設定
 
-`config.example.js` → `config.js` へリネームし、修正する
+`config.example.js` → `config.js` へリネームし、修正します。
 
 ```js
 module.exports = {
@@ -24,34 +28,39 @@ module.exports = {
 
 #### アプリセル設定
 
-`src/assets/launch.example.json` → `src/assets/launch.json` へリネームし、修正する
+`src/assets/launch.example.json` → `src/assets/launch.json` へリネームし、修正します。
 
 ```json
 {
   "personal": {
-    "web": "<CELL_FQDN>/__/front/app",    // アプリセルFQDNを埋める
+    "web": "<CELL_FQDN>/__/front/app",
     "android": "***:",
     "ios": "***;"
   }
 }
 ```
 
+- `<CELL_FQDN>` にはアプリセルのFQDNを入力します。
+
 #### ユーザーセル内アプリ設定①
 
-`src/bar/00_meta/00_manifest.example.json` → `src/bar/00_meta/00_manifest.json` へリネームし、修正
+`src/bar/00_meta/00_manifest.example.json` → `src/bar/00_meta/00_manifest.json` へリネームし、修正します。
 
 ```json
 {
   "bar_version": "2",
   "box_version": "1",
-  "default_path": "<DEFAULT_BOX_NAME>",   // ユーザーセル内で使用するbox名
-  "schema": "<APP_CELL_FQDN>"             // アプリセルFQDNを埋める
+  "default_path": "<DEFAULT_BOX_NAME>",
+  "schema": "<APP_CELL_FQDN>"
 }
 ```
 
+- `<DEFAULT_BOX_NAME>` にはユーザーセル内で使用するbox名を入力します。
+- `<APP_CELL_FQDN>` にはアプリセルのFQDNを入力します。
+
 #### ユーザーセル内アプリ設定②
 
-`src/bar/00_meta/90_rootprops.example.xml` → `src/bar/00_meta/90_rootprops.xml` へリネーム
+`src/bar/00_meta/90_rootprops.example.xml` → `src/bar/00_meta/90_rootprops.xml` へリネームします。
 
 ### ビルド
 
@@ -89,14 +98,14 @@ npm run deploy
 
 ACLの設定は手動で行います。
 
-1. `/__/front` の all に exec を付与する
-1. Service `/__/front` 内のスクリプト `launghSPA.js` に ServicePath `app` という名前を付ける
+1. `/__/front` の all に exec を付与します。
+1. Service `/__/front` 内のスクリプト `launghSPA.js` に ServicePath `app` という名前を付けます。
 ![Service Configuration](docs/setting_acl/service.png)
-1. hoge
+1. `/__/public` の all に read を付与します。
 
 #### アプリ情報の開示設定
 
-下記4ファイルの all に read を付与する
+下記4ファイルの all に read を付与します。
 
 - launch.json
 - profile.json
@@ -105,8 +114,13 @@ ACLの設定は手動で行います。
 
 ## 実行
 
-barをインストールしたユーザーのホームアプリからアイコンをクリックすると、
-`src/app/frontend/index.js` に実装された下記コードが実行されます。
+barをインストールしたユーザーのホームアプリからアイコンをクリックするとアプリが起動します。
+
+![Home](docs/launch_app/001.png)
+
+![Launch App](docs/launch_app/002.png)
+
+このとき、実行されるのは、`src/app/frontend/index.js` に実装されたコードです。
 
 ```es6
 import React from 'react';
@@ -118,4 +132,4 @@ ReactDOM.render(
 );
 ```
 
-![Launch App](docs/setting_acl/launch_app.png)
+本コードを修正することでReact.jsを使用した、SPAアプリケーションを開発することができます。
