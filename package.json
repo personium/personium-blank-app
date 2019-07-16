@@ -4,9 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prebuild": "gulp copy_statics",
     "build-bar": "gulp build_bar",
+    "prebuild": "gulp copy_statics",
     "build": "gulp webpack",
     "deploy": "gulp deploy"
   },
