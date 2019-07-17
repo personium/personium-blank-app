@@ -39,10 +39,10 @@
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
     "tunnel": "0.0.6",
-    "webdav": "https://github.com/yoh1496/webdav-client.git#feature/additional_body",
+    "webdav": "git+https://github.com/yoh1496/webdav-client.git#feature/updateProperty",
     "webpack": "^4.35.3",
     "webpack-stream": "^5.2.1",
-    "xml-js": "^1.6.11"
+    "xml2js": "^0.4.19"
   },
   "dependencies": {}
 }
