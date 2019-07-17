@@ -16,11 +16,12 @@ const authClient = (() => {
         method: 'POST',
         form: {
           grant_type: 'password',
-          username, password,
+          username,
+          password,
         },
       }).then(JSON.parse);
     },
-  }
+  };
 })();
 
 module.exports = authClient;
