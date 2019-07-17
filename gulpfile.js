@@ -7,6 +7,14 @@ const config = require('./config.js');
 const PersoniumAuthClient = require('./tools/auth');
 const PersoniumWebdavClient = require('./tools/webdav');
 
+const CONSTANT = {
+  RESOURCETYPE: {
+    SERVICE: 'service',
+    COLLECTION: 'collection',
+    STATICFILE: 'staticfile',
+  },
+};
+
 gulp.task('build_bar', () => {
   return gulp
     .src(['src/bar/**/*', '!src/bar/**/*.example.*'])
@@ -16,7 +24,14 @@ gulp.task('build_bar', () => {
 
 gulp.task('copy_statics', () => {
   const tasks = config.personium.DIRECTORY_MAPPING.map(mapping => {
-    const dstDir = path.join('build', mapping.dstDir);
+    const getDstDir = mapping => {
+      const strPaths = ['build', mapping.dstDir];
+      if (mapping.resourceType === CONSTANT.RESOURCETYPE.SERVICE) {
+        strPaths.push('__src');
+      }
+      return path.join(...strPaths);
+    };
+    const dstDir = getDstDir(mapping);
     return gulp
       .src(mapping.filePattern, { base: mapping.srcDir })
       .pipe(gulp.dest(dstDir));
@@ -32,7 +47,7 @@ async function deployCollection(client, srcFolder, dstName) {
   const collectionPath = path.join('/__/', dstName);
 
   try {
-    const result = await client.createCollection(collectionPath);
+    await client.createCollection(collectionPath);
   } catch (e) {
     if (e.response.status === 405) {
       console.log(
@@ -64,12 +79,13 @@ async function deployCollection(client, srcFolder, dstName) {
  * upload Engine folder.
  * It referers `__src` subdirectory as engine script.
  */
-async function deployEngine(client, engineFolderPath, engineName) {
+async function deployEngine(client, engineFolderPath, engineName, engineMeta) {
   const { getFiles } = require('./tools/directories');
   const enginePath = path.join('/__/', engineName);
+  const engineSrcFolderPath = path.join(engineFolderPath, '__src');
 
   try {
-    const result = await client.createEngine(enginePath);
+    await client.createEngine(enginePath);
   } catch (e) {
     if (e.response.status === 405) {
       console.log(`the engine ${enginePath} is already exists (perhaps)`);
@@ -80,7 +96,7 @@ async function deployEngine(client, engineFolderPath, engineName) {
   }
 
   // upload engine scripts
-  const files = await getFiles(path.join(engineFolderPath, '__src'));
+  const files = await getFiles(engineSrcFolderPath);
   const results = await Promise.all(
     files.map(fileInfo => {
       console.log(`engine upload: ${fileInfo.filepath}`);
@@ -92,6 +108,13 @@ async function deployEngine(client, engineFolderPath, engineName) {
     })
   );
 
+  // setting props
+  try {
+    await client.updateServiceEndpoint(enginePath, engineMeta);
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
   return results;
 }
 
@@ -110,11 +133,12 @@ gulp.task('deploy', () => {
 
     return Promise.all(
       config.personium.DIRECTORY_MAPPING.map(mapping => {
-        if (mapping.resourceType === 'engine') {
+        if (mapping.resourceType === CONSTANT.RESOURCETYPE.SERVICE) {
           return deployEngine(
             client,
             path.join('build', mapping.dstDir),
-            mapping.dstDir
+            mapping.dstDir,
+            mapping.meta
           );
         } else if (mapping.resourceType === 'staticfile') {
           const { getFiles } = require('./tools/directories');
