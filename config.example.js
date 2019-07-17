@@ -9,10 +9,14 @@ module.exports = {
         filePattern: ['src/app/engine/**/*', '!src/app/engine/**/*.example.*'],
         srcDir: 'src/app/engine',
         dstDir: 'front',
-        resourceType: 'service'
+        resourceType: 'service',
       },
       {
-        filePattern: ['src/app/public', 'src/app/public/**/*', '!src/app/public/**/*.example.*'],
+        filePattern: [
+          'src/app/public',
+          'src/app/public/**/*',
+          '!src/app/public/**/*.example.*',
+        ],
         srcDir: 'src/app/public',
         dstDir: 'public',
         resourceType: 'collection',
@@ -22,7 +26,7 @@ module.exports = {
   network: {
     http_proxy: process.env.http_proxy || '',
     https_proxy: process.env.https_proxy || '',
-  }
+  },
 };
 
 process.env.http_proxy = '';
@@ -34,4 +38,3 @@ console.log('------------------------------------------------------');
 console.log(' <info>');
 console.log('   Proxy env values are contained in `config.network` ');
 console.log('------------------------------------------------------');
-
