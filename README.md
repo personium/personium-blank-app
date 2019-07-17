@@ -33,7 +33,7 @@ module.exports = {
 ```json
 {
   "personal": {
-    "web": "<CELL_FQDN>/__/front/app",
+    "web": "https://<CELL_FQDN>/__/front/app",
     "android": "***:",
     "ios": "***;"
   }
@@ -101,6 +101,7 @@ ACLの設定は手動で行います。
 1. `/__/front` の all に exec を付与します。
 1. Service `/__/front` 内のスクリプト `launghSPA.js` に ServicePath `app` という名前を付けます。
 ![Service Configuration](docs/setting_acl/service.png)
+（※本設定は`npm run deploy` 時に自動で設定するように変更になったため、必要なくなりました。）
 1. `/__/public` の all に read を付与します。
 
 #### アプリ情報の開示設定
