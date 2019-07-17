@@ -32,6 +32,37 @@ class PersoniumWebdavClient {
     });
   }
 
+  updateServiceEndpoint(enginePath, { language, subject, endPoints }) {
+    const buildEngineXML = ({ language, subject, endPoints }) => {
+      const xml2js = require('xml2js');
+      const builder = new xml2js.Builder({
+        rootName: 'D:propertyupdate',
+        xmldec: { version: '1.0', encoding: 'UTF-8' },
+        renderOpts: { newline: '', indent: '' },
+      });
+      const paths = Object.entries(endPoints).map(([name, src]) => ({
+        $: { name, src },
+      }));
+      return builder.buildObject({
+        $: { 'xmlns:D': 'DAV:', 'xmlns:p': 'urn:x-personium:xmlns' },
+        'D:set': {
+          'D:prop': {
+            'p:service': {
+              $: { language, subject },
+              'p:path': paths,
+            },
+          },
+        },
+      });
+    };
+    const engineXML = buildEngineXML({ language, subject, endPoints });
+    console.log(engineXML);
+    return this.client.updateProperty(enginePath, {
+      headers: { 'Content-Type': 'application/xml' },
+      data: engineXML,
+    });
+  }
+
   putFile(dstPath, srcPath, options = {}) {
     const defaultOption = {
       overwrite: true,
