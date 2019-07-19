@@ -10,6 +10,13 @@ module.exports = {
         srcDir: 'src/app/engine',
         dstDir: 'front',
         resourceType: 'service',
+        meta: {
+          language: 'JavaScript',
+          subject: 'tokenAcc',
+          endPoints: {
+            app: 'launchSPA.js',
+          },
+        },
       },
       {
         filePattern: [
@@ -20,6 +27,12 @@ module.exports = {
         srcDir: 'src/app/public',
         dstDir: 'public',
         resourceType: 'collection',
+      },
+      {
+        filePattern: ['src/assets/**/*', '!src/assets/**/*.example.*'],
+        srcDir: 'src/assets',
+        dstDir: '',
+        resourceType: 'staticFile',
       },
     ],
   },
