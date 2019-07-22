@@ -2,6 +2,7 @@ const gulp = require('gulp');
 const zip = require('gulp-zip');
 const path = require('path').posix;
 const merge = require('merge-stream');
+const webpack = require('webpack-stream');
 
 const config = require('./config.js');
 const PersoniumAuthClient = require('./tools/auth');
@@ -22,6 +23,9 @@ gulp.task('build_bar', () => {
     .pipe(gulp.dest('dist'));
 });
 
+/**
+ * Prebuild Task
+ */
 gulp.task('copy_statics', () => {
   const tasks = config.personium.DIRECTORY_MAPPING.map(mapping => {
     const getDstDir = mapping => {
@@ -37,6 +41,17 @@ gulp.task('copy_statics', () => {
       .pipe(gulp.dest(dstDir));
   });
   return merge(tasks);
+});
+
+/**
+ * Build Task
+ */
+
+gulp.task('webpack', () => {
+  return gulp
+    .src('./src/app/frontend/index.js')
+    .pipe(webpack(require('./webpack.config')))
+    .pipe(gulp.dest('build/public'));
 });
 
 /*
@@ -163,13 +178,4 @@ gulp.task('deploy', () => {
       })
     );
   })();
-});
-
-const webpack = require('webpack-stream');
-
-gulp.task('webpack', () => {
-  return gulp
-    .src('src/app/frontend/index.js')
-    .pipe(webpack(require('./webpack.config')))
-    .pipe(gulp.dest('build/public'));
 });
