@@ -1,5 +1,6 @@
 const gulp = require('gulp');
 const zip = require('gulp-zip');
+const replace = require('gulp-replace');
 const path = require('path').posix;
 const merge = require('merge-stream');
 const webpack = require('webpack-stream');
@@ -15,6 +16,13 @@ const CONSTANT = {
     STATICFILE: 'staticfile',
   },
 };
+
+const constantReplacement = () =>
+  replace(/__CONSTANT_.*__/g, match => {
+    const res = config.personium.CONSTANT_DEFINITION[match];
+    console.log(`${match} -> ${res}`);
+    return res;
+  });
 
 gulp.task('build_bar', () => {
   return gulp
@@ -38,6 +46,7 @@ gulp.task('copy_statics', () => {
     const dstDir = getDstDir(mapping);
     return gulp
       .src(mapping.filePattern, { base: mapping.srcDir })
+      .pipe(constantReplacement())
       .pipe(gulp.dest(dstDir));
   });
   return merge(tasks);
