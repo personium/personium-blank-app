@@ -42,7 +42,12 @@ gulp.task('copy_statics', () => {
 /*
  * upload Ordinal folder. (collection)
  */
-async function deployCollection(client, srcFolder, dstName) {
+async function deployCollection(
+  client,
+  srcFolder,
+  dstName,
+  deploySubdirectory = true
+) {
   const { getContents } = require('./tools/directories');
   const collectionPath = path.join('/__/', dstName);
 
@@ -63,7 +68,7 @@ async function deployCollection(client, srcFolder, dstName) {
   return Promise.all(
     contents.map(content => {
       const { stat } = content;
-      if (stat.isDirectory()) {
+      if (deploySubdirectory && stat.isDirectory()) {
         const dstPath = path.join(dstName, content.filename);
         return deployCollection(client, content.filepath, dstPath);
       } else {
@@ -140,7 +145,7 @@ gulp.task('deploy', () => {
             mapping.dstDir,
             mapping.meta
           );
-        } else if (mapping.resourceType === 'staticfile') {
+        } else if (mapping.resourceType === CONSTANT.RESOURCETYPE.STATICFILE) {
           const { getFiles } = require('./tools/directories');
 
           return getFiles(path.join('build', mapping.dstDir)).then(contents =>
