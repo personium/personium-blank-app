@@ -1,34 +1,41 @@
 # personium-blank-app
 
-React.jsを使用したPersoniumアプリを開発するためのテンプレートです。
+This repository contains a template application of Personium and deployment tools.
 
-本コードを使用することで、「Personiumを使ったアプリ」ではなく「Personiumアプリ」を構築することが可能です。
+| stuff | libraries |
+| :-- | :-- |
+| Personium template app | React.js |
+| Personium app deployment tool | gulp, webdav |
 
-[「Personium アプリ」と「Personium を使ったアプリ」](https://personium.io/docs/ja/app-developer/)
+You can make `Personium App` ( not `Apps that uses Personium` ) by extending these codes.
 
-## 手順
+["Personium App" and "Apps that uses Personium"](https://personium.io/docs/en/app-developer/)
 
-### 設定ファイルの更新
+## Preaparation for deployment
 
-#### ビルド・デプロイ設定
+### Update configurations
 
-`config.example.js` → `config.js` へリネームし、修正します。
+#### Config: Building and Deployment
+
+Rename from `config.example.js` to `config.js` and modify it as below.
 
 ```js
 module.exports = {
   personium: {
-    CELL_NAME: '<CELL_NAME>',             // アプリセル名
-    CELL_FQDN: '<CELL_FQDN>',             // アプリセル名.ユニットFQDN
-    CELL_ADMIN: '<ADMIN_USERNAME>',       // rootユーザーID
-    CELL_ADMIN_PASS: '<ADMIN_PASSWORD>',  // rootユーザーパスワード
-  // 中略
+    CELL_NAME: '<CELL_NAME>',             // A name of Application Cell
+    CELL_FQDN: '<CELL_FQDN>',             // FQDN of Application Cell
+    CELL_ADMIN: '<ADMIN_USERNAME>',       // Username of user with admin role.
+    CELL_ADMIN_PASS: '<ADMIN_PASSWORD>',  // Password of user with admin role.
+  // ...
   }
 };
 ```
 
-#### アプリセル設定
+- `<CELL_FQDN>` reveals application cell's FQDN ( like `app-template.demo.personium.io` )
 
-`src/assets/launch.example.json` → `src/assets/launch.json` へリネームし、修正します。
+#### Config: Application Cell
+
+Rename from `src/assets/launch.example.json` to `src/assets/launch.json` and modify it as below.
 
 ```json
 {
@@ -40,88 +47,85 @@ module.exports = {
 }
 ```
 
-- `<CELL_FQDN>` にはアプリセルのFQDNを入力します。
+#### Config: Box in User Cell I
 
-#### ユーザーセル内アプリ設定①
-
-`src/bar/00_meta/00_manifest.example.json` → `src/bar/00_meta/00_manifest.json` へリネームし、修正します。
+Rename from `src/bar/00_meta/00_manifest.example.json` to `src/bar/00_meta/00_manifest.json` and modify it as below.
 
 ```json
 {
   "bar_version": "2",
   "box_version": "1",
   "default_path": "<DEFAULT_BOX_NAME>",
-  "schema": "<APP_CELL_FQDN>"
+  "schema": "<CELL_URL>"
 }
 ```
 
-- `<DEFAULT_BOX_NAME>` にはユーザーセル内で使用するbox名を入力します。
-- `<APP_CELL_FQDN>` にはアプリセルのFQDNを入力します。
+- `<DEFAULT_BOX_NAME>` reveals a name of Box created in User Cell when installation is done.
+- `<CELL_URL>` reveals URL of App Cell ( scheme + `<CELL_FQDN>` + `/` ).
 
-#### ユーザーセル内アプリ設定②
+#### Config: Box in User Cell II
 
-`src/bar/00_meta/90_rootprops.example.xml` → `src/bar/00_meta/90_rootprops.xml` へリネームします。
+Rename from `src/bar/00_meta/90_rootprops.example.xml` to `src/bar/00_meta/90_rootprops.xml`. ( without modifing )
 
-### ビルド
+### Build
 
-#### barファイルのビルド
+#### Building `bar` file
 
-ユーザーにインストールしてもらうbarファイルをビルドします。
+Build `bar` file with below command.
 
 ```bash
 npm run build-bar
 ```
 
-`dist/{アプリセル名}.bar` というファイルが生成されていれば成功です。これをユーザーのセルでインストールします。
+`bar` file contains structure of Application Box created in User Cell with installation.
 
-#### アプリのビルド
+This command generates `dist/<CELL_NAME>.bar`. You can install with this file from Home App Menu.
 
-アプリのビルドは下記コマンドで実行します。
+#### Building App
+
+Build App with below command.
 
 ```bash
-npm run build-app
+npm run build
 ```
 
-ビルドしたものは `build` フォルダ配下に配置されます。
+This command build application into `build` folder.
 
-### デプロイ
+### Deploy
 
-#### ビルド生成物のアップロード
+#### Deploying built stuff
 
-下記コマンドを実行することで先程のコマンドでビルドしたファイルをアップロードします。
+Upload built stuff ( Apps and static-files ) with below command.
 
 ```bash
 npm run deploy
 ```
 
-#### ACLの設定
+#### Configure ACL
 
-ACLの設定は手動で行います。
+Configurign ACL is conducted manually.
 
-1. `/__/front` の all に exec を付与します。
-1. Service `/__/front` 内のスクリプト `launghSPA.js` に ServicePath `app` という名前を付けます。
-![Service Configuration](docs/setting_acl/service.png)
-（※本設定は`npm run deploy` 時に自動で設定するように変更になったため、必要なくなりました。）
-1. `/__/public` の all に read を付与します。
+1. Set `exec` to `all(anyone)` in `front` service.
+1. Set `read` to `all(anyone)` in `public` folder.
 
-#### アプリ情報の開示設定
+#### Make application specs public
 
-下記4ファイルの all に read を付与します。
+Set `read` to `all(anyone)` to below (4 files).
 
 - launch.json
 - profile.json
 - relations.json
 - roles.json
 
-## 実行
+## Execute
 
-barをインストールしたユーザーのホームアプリからアイコンをクリックするとアプリが起動します。
+In Home App of user who installs `bar` file above can launch this application by touching icon.
 
 ![Home](docs/launch_app/001.png)
 
 ![Launch App](docs/launch_app/002.png)
 
-このとき、実行されるのは、`src/app/frontend/index.js` に実装されたコードです。
+The entrypoint of this application is `src/app/frontend/index.js`.
 
 ```es6
 import React from 'react';
@@ -133,4 +137,4 @@ ReactDOM.render(
 );
 ```
 
-本コードを修正することでReact.jsを使用した、SPAアプリケーションを開発することができます。
+So, you can implement SPA application with React.js by modifing this codes.
