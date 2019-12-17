@@ -67,3 +67,5 @@ src/assets/launch.json
 dist
 build
 config.js
+
+!.gitkeep
