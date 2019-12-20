@@ -4,8 +4,9 @@ const { globalAgent } = require('https');
 const config = require('../config');
 
 function getAgent(proxy_url = process.env.HTTPS_PROXY) {
-  if (!proxy_url) {
-    return globalAgent;
+  console.log({ proxy_url });
+  if (!proxy_url || proxy_url === '') {
+    return null;
   }
   try {
     const { hostname, port, username, password } = new URL(proxy_url);
@@ -19,4 +20,4 @@ function getAgent(proxy_url = process.env.HTTPS_PROXY) {
 
 module.exports = {
   agent: getAgent(config.network.https_proxy),
-}
+};
