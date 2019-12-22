@@ -1,5 +1,5 @@
 module.exports = {
-  // entry: ['babel-polyfill'],
+  entry: ['regenerator-runtime/runtime', './src/app/frontend/index.js'],
   module: {
     rules: [
       {
