@@ -8,7 +8,7 @@
     "prebuild": "gulp copy_statics",
     "build": "gulp webpack",
     "deploy": "gulp deploy",
-    "debug": "cross-env NODE_ENV=development webpack-dev-server -d --progress --colors --open"
+    "debug": "cross-env NODE_ENV=development webpack-dev-server -d --progress --colors --open --watch"
   },
   "repository": {
     "type": "git",
