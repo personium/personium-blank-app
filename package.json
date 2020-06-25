@@ -37,6 +37,7 @@
     "merge-stream": "^2.0.0",
     "mime-types": "^2.1.24",
     "prettier": "^1.18.2",
+    "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-router-dom": "^5.2.0",
