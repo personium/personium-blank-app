@@ -22,7 +22,7 @@ module.exports = {
     "react-hooks",
   ], 
   "rules": {
-    "react-hooks/rule-of-hooks": "error",
+    "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "linebreak-style": [
       "error",
