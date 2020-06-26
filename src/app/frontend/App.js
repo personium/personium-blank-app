@@ -1,18 +1,11 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  HashRouter,
-  Switch,
-  Route,
-  Link,
-  Redirect,
-  useLocation,
-  useHistory,
-} from 'react-router-dom';
+import { HashRouter, Switch, Route, Link, Redirect } from 'react-router-dom';
 
 import { Top } from './Top';
 import { UserPage } from './UserPage';
 import {
+  PersoniumAuthPage,
   PersoniumAuthProvider,
   usePersoniumAuthentication,
 } from './PersoniumAuthentication';
@@ -23,7 +16,7 @@ function PrivateRoute({ authPath, children, ...rest }) {
     <Route
       {...rest}
       render={({ location }) =>
-        isAuthenticated ? (
+        isAuthenticated !== null ? (
           children
         ) : (
           <Redirect to={{ pathname: authPath, state: { from: location } }} />
@@ -37,20 +30,6 @@ PrivateRoute.propTypes = {
   authPath: PropTypes.string.isRequired,
   children: PropTypes.element.isRequired,
 };
-
-function FakeAuthPage() {
-  const setAuthed = usePersoniumAuthentication().pop();
-  const location = useLocation();
-  const history = useHistory();
-
-  const { from } = location.state || { from: { pathname: '/' } };
-
-  const handleLogin = () => {
-    setAuthed(true);
-    history.replace(from);
-  };
-  return <button onClick={handleLogin}>fakeLogin</button>;
-}
 
 function NotMatch() {
   return (
@@ -74,7 +53,7 @@ export function App() {
           <PrivateRoute path="/user" authPath="/login">
             <UserPage />
           </PrivateRoute>
-          <Route path="/login" component={FakeAuthPage} />
+          <Route path="/login" component={PersoniumAuthPage} />
           <Route path="*">
             <NotMatch />
           </Route>
