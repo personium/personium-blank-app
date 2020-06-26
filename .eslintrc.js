@@ -18,9 +18,12 @@ module.exports = {
     "sourceType": "module"
   },
   "plugins": [
-    "react"
+    "react",
+    "react-hooks",
   ], 
   "rules": {
+    "react-hooks/rule-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
     "linebreak-style": [
       "error",
       "unix"
