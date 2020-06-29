@@ -1,44 +1,38 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { HashRouter, Switch, Route, Link, Redirect } from 'react-router-dom';
+import { HashRouter, Switch, Route, Link } from 'react-router-dom';
 
 import { Top } from './Top';
 import { UserPage } from './UserPage';
 import {
   PersoniumAuthPage,
   PersoniumAuthProvider,
-  usePersoniumAuthentication,
-} from './PersoniumAuthentication';
+  PrivateRoute,
+} from './lib/Personium';
 
-function PrivateRoute({ authPath, children, ...rest }) {
-  const [isAuthenticated] = usePersoniumAuthentication();
+function AppHeader() {
   return (
-    <Route
-      {...rest}
-      render={({ location }) =>
-        isAuthenticated !== null ? (
-          children
-        ) : (
-          <Redirect to={{ pathname: authPath, state: { from: location } }} />
-        )
-      }
-    />
+    <Link to="/">
+      <h1>Personium Blank App</h1>
+    </Link>
   );
 }
 
-PrivateRoute.propTypes = {
-  authPath: PropTypes.string.isRequired,
-  children: PropTypes.element.isRequired,
-};
-
-function NotMatch() {
+function AppFooter() {
   return (
-    <>
-      <h1>Does not match any Route</h1>
-      <div>
-        <Link to="/">Top</Link>
-      </div>
-    </>
+    <div
+      style={{
+        position: 'fixed',
+        textAlign: 'center',
+        bottom: 0,
+        width: '100vw',
+        paddingBottom: 8,
+      }}
+    >
+      This app is based on{' '}
+      <a href="https://github.com/personium/personium-blank-app">
+        personium-blank-app
+      </a>
+    </div>
   );
 }
 
@@ -46,6 +40,7 @@ export function App() {
   return (
     <HashRouter>
       <PersoniumAuthProvider>
+        <AppHeader />
         <Switch>
           <Route path="/" exact>
             <Top />
@@ -53,12 +48,18 @@ export function App() {
           <PrivateRoute path="/user" authPath="/login">
             <UserPage />
           </PrivateRoute>
-          <Route path="/login" component={PersoniumAuthPage} />
+          <Route path="/login">
+            <PersoniumAuthPage />
+          </Route>
           <Route path="*">
-            <NotMatch />
+            <h2>Does not match any Route</h2>
+            <div>
+              <Link to="/">Top</Link>
+            </div>
           </Route>
         </Switch>
       </PersoniumAuthProvider>
+      <AppFooter />
     </HashRouter>
   );
 }
