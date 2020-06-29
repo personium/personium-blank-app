@@ -6,7 +6,7 @@ import React, {
   useEffect,
   useRef,
 } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useLocation, Route, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 const PersoniumAuthenticationContext = createContext({});
@@ -37,7 +37,7 @@ export function usePersoniumAuthentication() {
 
     setAuth(await res.json());
   };
-  return [auth, authWithROPC];
+  return { auth, authWithROPC };
 }
 
 export function PersoniumAuthProvider({ children }) {
@@ -73,10 +73,10 @@ UserCellInput.propTypes = {
   onSubmit: PropTypes.func.isRequired,
 };
 
-function PersoniumROPCForm({ cellUrl, onLogin }) {
+function PersoniumROPCForm({ cellUrl, onLogin, onCancel }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const authWithROPC = usePersoniumAuthentication().pop();
+  const { authWithROPC } = usePersoniumAuthentication();
 
   const handleSubmit = useCallback(
     e => {
@@ -96,7 +96,6 @@ function PersoniumROPCForm({ cellUrl, onLogin }) {
 
   return (
     <>
-      <h3>Please Input ROPC info (username/password)</h3>
       <form onSubmit={handleSubmit}>
         <input
           ref={inputRef}
@@ -131,7 +130,6 @@ export function PersoniumAuthPage() {
     url => {
       // ToDo: URL validation
       setUserCell(url);
-      console.log(JSON.stringify(url));
     },
     [setUserCell]
   );
@@ -144,16 +142,42 @@ export function PersoniumAuthPage() {
   if (userCellUrl === null) {
     return (
       <>
-        <h1>Please input cell url</h1>
+        <h2>Please input cell url</h2>
         <UserCellInput onSubmit={handleSubmit}></UserCellInput>
       </>
     );
   }
 
   // start ROPC
-  return <PersoniumROPCForm cellUrl={userCellUrl} onLogin={handleLogin} />;
+  return (
+    <>
+      <h2>Please Input ROPC info (username/password)</h2>
+      <PersoniumROPCForm cellUrl={userCellUrl} onLogin={handleLogin} />
+    </>
+  );
 }
 
 PersoniumAuthProvider.propTypes = {
+  children: PropTypes.element.isRequired,
+};
+
+export function PrivateRoute({ authPath, children, ...rest }) {
+  const { auth } = usePersoniumAuthentication();
+  return (
+    <Route
+      {...rest}
+      render={({ location }) =>
+        auth !== null ? (
+          children
+        ) : (
+          <Redirect to={{ pathname: authPath, state: { from: location } }} />
+        )
+      }
+    />
+  );
+}
+
+PrivateRoute.propTypes = {
+  authPath: PropTypes.string.isRequired,
   children: PropTypes.element.isRequired,
 };
