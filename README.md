@@ -2,9 +2,9 @@
 
 This repository contains a template application of Personium and deployment tools.
 
-| stuff | libraries |
-| :-- | :-- |
-| Personium template app | React.js |
+| stuff                         | libraries    |
+| :---------------------------- | :----------- |
+| Personium template app        | React.js     |
 | Personium app deployment tool | gulp, webdav |
 
 You can make `Personium App` ( not `Apps that uses Personium` ) by extending these codes.
@@ -22,12 +22,12 @@ Rename from `config.example.js` to `config.js` and modify it as below.
 ```js
 module.exports = {
   personium: {
-    CELL_NAME: '<CELL_NAME>',             // A name of Application Cell
-    CELL_FQDN: '<CELL_FQDN>',             // FQDN of Application Cell
-    CELL_ADMIN: '<ADMIN_USERNAME>',       // Username of user with admin role.
-    CELL_ADMIN_PASS: '<ADMIN_PASSWORD>',  // Password of user with admin role.
-  // ...
-  }
+    CELL_NAME: "<CELL_NAME>", // A name of Application Cell
+    CELL_FQDN: "<CELL_FQDN>", // FQDN of Application Cell
+    CELL_ADMIN: "<ADMIN_USERNAME>", // Username of user with admin role.
+    CELL_ADMIN_PASS: "<ADMIN_PASSWORD>", // Password of user with admin role.
+    // ...
+  },
 };
 ```
 
@@ -101,6 +101,27 @@ Upload built stuff ( Apps and static-files ) with below command.
 npm run deploy
 ```
 
+This command refers credentials in env value. Make sure below env value are set before try this code.
+
+| ValueName        | Description                                     |
+| :--------------- | :---------------------------------------------- |
+| `PERSONIUM_USER` | Username of admin user in your application cell |
+| `PERSONIUM_PASS` | Password of admin user in your application cell |
+
+You can run this command with setting env value like below command.
+
+In Linux,
+
+```bash
+PERSONIUM_USER=*** PERSONIUM_PASS=*** npm run deploy
+```
+
+In Windows,
+
+```cmd
+set PERSONIUM_USER=*** && set PERSONIUM_USER=*** && npm run deploy
+```
+
 #### Configure ACL
 
 Configurign ACL is conducted manually.
@@ -128,13 +149,10 @@ In Home App of user who installs `bar` file above can launch this application by
 The entrypoint of this application is `src/app/frontend/index.js`.
 
 ```es6
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from "react";
+import ReactDOM from "react-dom";
 
-ReactDOM.render(
-  <h1>Hello React!</h1>,
-  document.getElementById('root')
-);
+ReactDOM.render(<h1>Hello React!</h1>, document.getElementById("root"));
 ```
 
 So, you can implement SPA application with React.js by modifing this codes.
