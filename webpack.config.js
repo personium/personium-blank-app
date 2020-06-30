@@ -1,5 +1,8 @@
+const path = require('path');
+
 module.exports = {
-  // entry: ['babel-polyfill'],
+  mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
+  entry: ['@babel/polyfill', './src/app/frontend/index.js'],
   module: {
     rules: [
       {
@@ -20,12 +23,14 @@ module.exports = {
     extensions: ['*', '.js', '.jsx'],
   },
   output: {
-    // eslint-disable-next-line
+    path: path.resolve(__dirname, 'build/public'),
     filename: 'bundle.js',
   },
   devServer: {
-    open: true,
-    inline: true,
-    contentBase: './public/',
+    contentBase: `${__dirname}/tools`,
+    publicPath: '/__/public/',
+    historyApiFallback: {
+      rewrites: [{ from: '/', to: '/dev_index.html' }],
+    },
   },
 };

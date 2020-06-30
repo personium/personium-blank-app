@@ -7,7 +7,8 @@
     "build-bar": "gulp build_bar",
     "prebuild": "gulp copy_statics",
     "build": "gulp webpack",
-    "deploy": "gulp deploy"
+    "deploy": "gulp deploy",
+    "debug": "cross-env NODE_ENV=development webpack-dev-server -d --progress --colors --open --watch"
   },
   "repository": {
     "type": "git",
@@ -21,10 +22,12 @@
   "homepage": "https://github.com/yoh1496/personium-blank-app#readme",
   "devDependencies": {
     "@babel/core": "^7.5.4",
+    "@babel/polyfill": "^7.10.1",
     "@babel/preset-env": "^7.5.4",
     "@babel/preset-react": "^7.0.0",
     "babel-eslint": "^10.0.2",
     "babel-loader": "^8.0.6",
+    "cross-env": "^7.0.2",
     "eslint": "^6.7.2",
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-prettier": "^3.1.0",
@@ -41,6 +44,8 @@
     "tunnel": "0.0.6",
     "webdav": "git+https://github.com/yoh1496/webdav-client.git#feature/updateProperty",
     "webpack": "^4.41.3",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.11.0",
     "webpack-stream": "^5.2.1",
     "xml2js": "^0.4.19"
   },
