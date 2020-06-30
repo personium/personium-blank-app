@@ -1,12 +1,5 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useCallback,
-  useEffect,
-  useRef,
-} from 'react';
-import { useHistory, useLocation, Route, Redirect } from 'react-router-dom';
+import React, { createContext, useContext, useState } from 'react';
+import { Route, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 const PersoniumAuthenticationContext = createContext({});
@@ -34,10 +27,13 @@ export function usePersoniumAuthentication() {
         statusText: res.statusText,
       };
     }
-
     setAuth(await res.json());
   };
-  return { auth, authWithROPC };
+
+  const logout = async () => {
+    setAuth(null);
+  };
+  return { auth, authWithROPC, logout };
 }
 
 export function PersoniumAuthProvider({ children }) {
@@ -46,114 +42,6 @@ export function PersoniumAuthProvider({ children }) {
     <PersoniumAuthenticationContext.Provider value={[auth, setAuth]}>
       {children}
     </PersoniumAuthenticationContext.Provider>
-  );
-}
-
-function UserCellInput({ onSubmit }) {
-  const [inputVal, setInputVal] = useState('');
-  const inputRef = useRef(null);
-  useEffect(() => {
-    inputRef.current.focus();
-  }, [inputRef]);
-
-  return (
-    <form onSubmit={() => onSubmit(inputVal)}>
-      <input
-        ref={inputRef}
-        type="text"
-        onChange={e => setInputVal(e.target.value)}
-        value={inputVal}
-      />
-      <button type="submit">Submit</button>
-    </form>
-  );
-}
-
-UserCellInput.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-};
-
-function PersoniumROPCForm({ cellUrl, onLogin, onCancel }) {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const { authWithROPC } = usePersoniumAuthentication();
-
-  const handleSubmit = useCallback(
-    e => {
-      e.preventDefault();
-      authWithROPC(cellUrl, username, password).then(() => {
-        onLogin();
-        console.log('authenticated');
-      });
-    },
-    [username, password, cellUrl, authWithROPC, onLogin]
-  );
-
-  const inputRef = useRef(null);
-  useEffect(() => {
-    inputRef.current.focus();
-  }, []);
-
-  return (
-    <>
-      <form onSubmit={handleSubmit}>
-        <input
-          ref={inputRef}
-          type="username"
-          value={username}
-          onChange={e => setUsername(e.target.value)}
-        />
-        <br />
-        <input
-          type="password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-        />
-        <br />
-        <button type="submit">Submit</button>
-      </form>
-    </>
-  );
-}
-
-PersoniumROPCForm.propTypes = {
-  cellUrl: PropTypes.string.isRequired,
-  onLogin: PropTypes.func.isRequired,
-};
-
-export function PersoniumAuthPage() {
-  const [userCellUrl, setUserCell] = useState(null);
-  const location = useLocation();
-  const history = useHistory();
-
-  const handleSubmit = useCallback(
-    url => {
-      // ToDo: URL validation
-      setUserCell(url);
-    },
-    [setUserCell]
-  );
-
-  const handleLogin = useCallback(() => {
-    const { from } = location.state || { from: { pathname: '/' } };
-    history.replace(from);
-  }, [location, history]);
-
-  if (userCellUrl === null) {
-    return (
-      <>
-        <h2>Please input cell url</h2>
-        <UserCellInput onSubmit={handleSubmit}></UserCellInput>
-      </>
-    );
-  }
-
-  // start ROPC
-  return (
-    <>
-      <h2>Please Input ROPC info (username/password)</h2>
-      <PersoniumROPCForm cellUrl={userCellUrl} onLogin={handleLogin} />
-    </>
   );
 }
 

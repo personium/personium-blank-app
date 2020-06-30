@@ -1,17 +1,38 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 
-const PersoniumConfigContext = createContext({
+const defaultConfig = {
   appCellUrl: null,
   targetCellUrl: null,
-});
+};
+
+const PersoniumConfigContext = createContext(defaultConfig);
 
 export function usePersoniumConfig() {
-  const [config] = useContext(PersoniumConfigContext);
-  return { appCellUrl: config.appCellUrl, targetCellUrl: config.targetCellUrl };
+  const [config, setConfig] = useContext(PersoniumConfigContext);
+
+  return {
+    config: {
+      appCellUrl: config.appCellUrl,
+      targetCellUrl: config.targetCellUrl,
+    },
+    setConfig: {
+      setAppCellUrl: useCallback(
+        appCellUrl => setConfig(c => Object.assign({}, c, { appCellUrl })),
+        [setConfig]
+      ),
+      setTargetCellUrl: useCallback(
+        targetCellUrl =>
+          setConfig(c => Object.assign({}, c, { targetCellUrl })),
+        [setConfig]
+      ),
+      rawSetConfig: setConfig,
+    },
+  };
 }
 
-export function PersoniumConfigProvider({ config, setConfig, children }) {
+export function PersoniumConfigProvider({ children }) {
+  const [config, setConfig] = useState(defaultConfig);
   return (
     <PersoniumConfigContext.Provider value={[config, setConfig]}>
       {children}

@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { HashRouter, Switch, Route, Link } from 'react-router-dom';
 
 import { Top } from './Top';
 import { UserPage } from './UserPage';
 import {
-  PersoniumAuthPage,
   PersoniumAuthProvider,
+  PersoniumConfigProvider,
   PrivateRoute,
+  usePersoniumConfig,
 } from './lib/Personium';
+
+import { PersoniumAuthPage } from './Auth';
 
 function AppHeader() {
   return (
@@ -36,30 +39,76 @@ function AppFooter() {
   );
 }
 
+function AppInitializer({ handleInitialized }) {
+  const { setConfig } = usePersoniumConfig();
+
+  useEffect(() => {
+    // Boot Script
+    const currentHash = location.hash.replace(/^#\/?/g, '#');
+
+    let targetCell = null;
+
+    // load cell parameter from localStorage
+    if (localStorage.getItem('lastLoginCell')) {
+      targetCell = localStorage.getItem('lastLoginCell');
+    }
+
+    // handling cell parameter
+    if (currentHash.startsWith('#cell')) {
+      const hashParams = new URLSearchParams(currentHash.replace(/^#\/?/g, ''));
+      if (hashParams.has('cell')) {
+        targetCell = hashParams.get('cell');
+        hashParams.delete('cell');
+      }
+      location.hash = '/';
+    }
+
+    setConfig.rawSetConfig(c => {
+      const newState = Object.assign({}, c, { targetCellUrl: targetCell });
+      console.log(newState);
+      return newState;
+    });
+    handleInitialized(true);
+  }, [setConfig, handleInitialized]);
+
+  return null;
+}
+
 export function App() {
+  const [initialized, setInitialized] = useState(false);
+
   return (
-    <HashRouter>
-      <PersoniumAuthProvider>
-        <AppHeader />
-        <Switch>
-          <Route path="/" exact>
-            <Top />
-          </Route>
-          <PrivateRoute path="/user" authPath="/login">
-            <UserPage />
-          </PrivateRoute>
-          <Route path="/login">
-            <PersoniumAuthPage />
-          </Route>
-          <Route path="*">
-            <h2>Does not match any Route</h2>
-            <div>
-              <Link to="/">Top</Link>
-            </div>
-          </Route>
-        </Switch>
-      </PersoniumAuthProvider>
-      <AppFooter />
-    </HashRouter>
+    <PersoniumConfigProvider>
+      {!initialized ? (
+        <>
+          <AppInitializer handleInitialized={setInitialized} />
+          <div>Initializing...</div>
+        </>
+      ) : (
+        <HashRouter>
+          <PersoniumAuthProvider>
+            <AppHeader />
+            <Switch>
+              <Route path="/" exact>
+                <Top />
+              </Route>
+              <PrivateRoute path="/user" authPath="/login">
+                <UserPage />
+              </PrivateRoute>
+              <Route path="/login">
+                <PersoniumAuthPage />
+              </Route>
+              <Route path="*">
+                <h2>Does not match any Route</h2>
+                <div>
+                  <Link to="/">Top</Link>
+                </div>
+              </Route>
+            </Switch>
+            <AppFooter />
+          </PersoniumAuthProvider>
+        </HashRouter>
+      )}
+    </PersoniumConfigProvider>
   );
 }

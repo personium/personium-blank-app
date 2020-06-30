@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {
   usePersoniumAuthentication,
@@ -30,8 +30,12 @@ export function ProfileCard() {
     );
   }
 
+  console.log(profile);
+
   return (
-    <div className="card">
+    <div className="card" style={{ padding: 8 }}>
+      <h3>{profile.DisplayName}</h3>
+      <blockquote>{profile.Description}</blockquote>
       <ProfileImg src={profile.Image} />
     </div>
   );
