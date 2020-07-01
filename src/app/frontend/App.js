@@ -68,7 +68,7 @@ function AppInitializer({ handleInitialized }) {
     setConfig.rawSetConfig(c => {
       const newState = Object.assign({}, c, {
         targetCellUrl: targetCell,
-        appCellUrl: AppConstant.appCellUrl,
+        appCellUrl: AppConstant.cellUrl,
       });
       console.log(newState);
       return newState;
