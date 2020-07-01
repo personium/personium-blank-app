@@ -3,6 +3,7 @@ import { HashRouter, Switch, Route, Link } from 'react-router-dom';
 
 import { Top } from './Top';
 import { UserPage } from './UserPage';
+import { AppConstant } from './Constants';
 import {
   PersoniumAuthProvider,
   PersoniumConfigProvider,
@@ -11,6 +12,7 @@ import {
 } from './lib/Personium';
 
 import { PersoniumAuthPage } from './Auth';
+import { PersoniumBoxProvider } from './lib/Personium/Context/PersoniumBox';
 
 function AppHeader() {
   return (
@@ -64,7 +66,10 @@ function AppInitializer({ handleInitialized }) {
     }
 
     setConfig.rawSetConfig(c => {
-      const newState = Object.assign({}, c, { targetCellUrl: targetCell });
+      const newState = Object.assign({}, c, {
+        targetCellUrl: targetCell,
+        appCellUrl: AppConstant.appCellUrl,
+      });
       console.log(newState);
       return newState;
     });
@@ -87,25 +92,27 @@ export function App() {
       ) : (
         <HashRouter>
           <PersoniumAuthProvider>
-            <AppHeader />
-            <Switch>
-              <Route path="/" exact>
-                <Top />
-              </Route>
-              <PrivateRoute path="/user" authPath="/login">
-                <UserPage />
-              </PrivateRoute>
-              <Route path="/login">
-                <PersoniumAuthPage />
-              </Route>
-              <Route path="*">
-                <h2>Does not match any Route</h2>
-                <div>
-                  <Link to="/">Top</Link>
-                </div>
-              </Route>
-            </Switch>
-            <AppFooter />
+            <PersoniumBoxProvider>
+              <AppHeader />
+              <Switch>
+                <Route path="/" exact>
+                  <Top />
+                </Route>
+                <PrivateRoute path="/user" authPath="/login">
+                  <UserPage />
+                </PrivateRoute>
+                <Route path="/login">
+                  <PersoniumAuthPage />
+                </Route>
+                <Route path="*">
+                  <h2>Does not match any Route</h2>
+                  <div>
+                    <Link to="/">Top</Link>
+                  </div>
+                </Route>
+              </Switch>
+              <AppFooter />
+            </PersoniumBoxProvider>
           </PersoniumAuthProvider>
         </HashRouter>
       )}

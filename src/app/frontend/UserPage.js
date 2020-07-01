@@ -1,31 +1,80 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState } from 'react';
+import PropTypes from 'prop-types';
 import { ProfileCard } from './ProfileCard';
-import {
-  usePersoniumAuthentication,
-  usePersoniumConfig,
-} from './lib/Personium';
+import { usePersoniumAuthentication } from './lib/Personium';
+
+import { useBoxUrl } from './lib/Personium/Context/PersoniumBox';
+import { usePersoniumBoxInstall } from './lib/Personium/Util/usePersoniumBoxInstall';
+
+import { AppConstant } from './Constants';
+
+function BoxInstallView({ onRefresh }) {
+  const { error, loading, installBar, status } = usePersoniumBoxInstall(
+    AppConstant.barFileUrl,
+    AppConstant.installBoxName
+  );
+  const [started, setStarted] = useState(false);
+
+  const handleClickBoxInstallation = useCallback(() => {
+    setStarted(true);
+    installBar().then(() => {
+      console.log('install started');
+    });
+  }, [installBar, setStarted]);
+
+  if (!started) {
+    return (
+      <div>
+        <h4>Box is not installed</h4>
+        <button onClick={handleClickBoxInstallation}>Box Install</button>
+      </div>
+    );
+  }
+
+  if (loading)
+    return (
+      <div>
+        <h4>Box Installing...</h4>
+        {status.map(({ time, text }) => {
+          <p key={`status-${time}`}>
+            {time}: {text}
+          </p>;
+        })}
+      </div>
+    );
+
+  if (error)
+    return (
+      <div>
+        <h4>Box Install failed</h4>
+        <p>{error.text}</p>
+      </div>
+    );
+
+  return (
+    <div>
+      <h4>Box installation is executed</h4>
+      <button onClick={onRefresh}>Refresh</button>
+    </div>
+  );
+}
+
+BoxInstallView.propTypes = {
+  onRefresh: PropTypes.func.isRequired,
+};
 
 function BoxView() {
-  const { config } = usePersoniumConfig();
-  const { auth } = usePersoniumAuthentication();
-  const [boxUrl, setBoxUrl] = useState('');
+  const { loading, error, refetchBoxUrl, boxUrl } = useBoxUrl();
 
-  useEffect(() => {
-    const schemaUrl = null;
-    (async () => {
-      const { access_token } = auth;
-      const requestUrl = new URL(`${config.targetCellUrl}__box`);
-      if (schemaUrl !== null) {
-        requestUrl.searchParams.set('schema', schemaUrl);
-      }
-      const res = await fetch(requestUrl, {
-        headers: { Authorization: `Bearer ${access_token}` },
-      });
+  if (loading) return <p>Loading</p>;
 
-      if (!res.ok) throw res;
-      return res.headers.get('location');
-    })();
-  });
+  if (error) return <p>{JSON.stringify(error)}</p>;
+
+  if (boxUrl === null) {
+    return <BoxInstallView onRefresh={refetchBoxUrl} />;
+  }
+
+  return <p>{boxUrl}</p>;
 }
 
 export function UserPage() {

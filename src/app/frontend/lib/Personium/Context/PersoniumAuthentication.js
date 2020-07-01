@@ -2,10 +2,13 @@ import React, { createContext, useContext, useState } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-const PersoniumAuthenticationContext = createContext({});
+const PersoniumAuthenticationContext = createContext({
+  auth: null,
+  setAuth: null,
+});
 
 export function usePersoniumAuthentication() {
-  const [auth, setAuth] = useContext(PersoniumAuthenticationContext);
+  const { auth, setAuth } = useContext(PersoniumAuthenticationContext);
 
   const authWithROPC = async (cellUrl, username, password) => {
     const data = new URLSearchParams();
@@ -39,7 +42,7 @@ export function usePersoniumAuthentication() {
 export function PersoniumAuthProvider({ children }) {
   const [auth, setAuth] = useState(null);
   return (
-    <PersoniumAuthenticationContext.Provider value={[auth, setAuth]}>
+    <PersoniumAuthenticationContext.Provider value={{ auth, setAuth }}>
       {children}
     </PersoniumAuthenticationContext.Provider>
   );
