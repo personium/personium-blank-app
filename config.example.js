@@ -23,6 +23,24 @@ module.exports = {
       },
       {
         filePattern: [
+          'src/app/engine/auth/*',
+          '!src/app/engine/auth/*.example.*',
+        ],
+        srcDir: 'src/app/engine/auth',
+        dstDir: 'auth',
+        resourceType: 'service',
+        meta: {
+          language: 'JavaScript',
+          subject: 'tokenAcc',
+          endPoints: {
+            start_oauth2: 'start_oauth2.js',
+            receive_redirect: 'receive_redirect.js',
+            refreshProtectedBoxAccessToken: 'refreshProtectedBoxAccessToken.js',
+          },
+        },
+      },
+      {
+        filePattern: [
           'src/app/public',
           'src/app/public/**/*',
           '!src/app/public/**/*.example.*',
