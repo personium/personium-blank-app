@@ -6,8 +6,11 @@ module.exports = {
     CELL_ADMIN_PASS: '<ADMIN_PASSWORD>',
     DIRECTORY_MAPPING: [
       {
-        filePattern: ['src/app/engine/**/*', '!src/app/engine/**/*.example.*'],
-        srcDir: 'src/app/engine',
+        filePattern: [
+          'src/app/engine/front/*',
+          '!src/app/engine/front/*.example.*',
+        ],
+        srcDir: 'src/app/engine/front',
         dstDir: 'front',
         resourceType: 'service',
         meta: {
@@ -15,6 +18,24 @@ module.exports = {
           subject: 'tokenAcc',
           endPoints: {
             app: 'launchSPA.js',
+          },
+        },
+      },
+      {
+        filePattern: [
+          'src/app/engine/auth/*',
+          '!src/app/engine/auth/*.example.*',
+        ],
+        srcDir: 'src/app/engine/auth',
+        dstDir: 'auth',
+        resourceType: 'service',
+        meta: {
+          language: 'JavaScript',
+          subject: 'tokenAcc',
+          endPoints: {
+            start_oauth2: 'start_oauth2.js',
+            receive_redirect: 'receive_redirect.js',
+            refreshProtectedBoxAccessToken: 'refreshProtectedBoxAccessToken.js',
           },
         },
       },
