@@ -29,7 +29,7 @@ export function useBoxUrl() {
 
 export function PersoniumBoxProvider(props) {
   const { config } = usePersoniumConfig();
-  const { auth } = usePersoniumAuthentication();
+  const { auth } = usePersoniumAuthentication(config.appCellUrl);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [boxUrl, setBoxUrl] = useState(null);

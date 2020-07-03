@@ -3,95 +3,12 @@ import PropTypes from 'prop-types';
 
 import { useLocation, useHistory } from 'react-router-dom';
 
-import {
-  usePersoniumAuthentication,
-  usePersoniumConfig,
-} from '../lib/Personium';
+import { usePersoniumConfig } from '../lib/Personium';
 
-function UserCellInput({ onSubmit, targetCellUrl }) {
-  const [inputVal, setInputVal] = useState(targetCellUrl);
-
-  const inputRef = useRef(null);
-  useEffect(() => {
-    inputRef.current.focus();
-  }, [inputRef]);
-
-  return (
-    <form
-      onSubmit={e => {
-        e.preventDefault();
-        onSubmit(inputVal);
-      }}
-    >
-      <input
-        ref={inputRef}
-        type="text"
-        onChange={e => setInputVal(e.target.value)}
-        value={inputVal}
-      />
-      <button type="submit">Submit</button>
-    </form>
-  );
-}
-
-UserCellInput.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-  targetCellUrl: PropTypes.string.isRequired,
-};
-
-function PersoniumROPCForm({ cellUrl, onLogin }) {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const { authWithROPC } = usePersoniumAuthentication();
-
-  const handleSubmit = useCallback(
-    e => {
-      e.preventDefault();
-      authWithROPC(cellUrl, username, password).then(() => {
-        onLogin();
-        console.log('authenticated');
-      });
-    },
-    [username, password, cellUrl, authWithROPC, onLogin]
-  );
-
-  const inputRef = useRef(null);
-  useEffect(() => {
-    inputRef.current.focus();
-  }, []);
-
-  return (
-    <>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Username:
-          <input
-            ref={inputRef}
-            type="text"
-            value={username}
-            onChange={e => setUsername(e.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Password:
-          <input
-            type="password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-          />
-        </label>
-        <br />
-        <button type="submit">Submit</button>
-      </form>
-    </>
-  );
-}
-
-PersoniumROPCForm.propTypes = {
-  cellUrl: PropTypes.string.isRequired,
-  onLogin: PropTypes.func.isRequired,
-};
+import { UserCellInput } from './UserCellInput';
+import { PersoniumROPCForm } from './ROPCForm';
+import { IFrameAuthPage } from './AuthWithIFrame';
+import { WindowAuthPage } from './AuthWithWindow';
 
 export function PersoniumAuthPage({ canSkip = true }) {
   const { config, setConfig } = usePersoniumConfig();
@@ -137,12 +54,77 @@ export function PersoniumAuthPage({ canSkip = true }) {
     );
   }
 
+  if (inputStep === 1) {
+    return (
+      <>
+        <h2>AuthPage</h2>
+        <h3>Choose authentication type</h3>
+        <a
+          href="#"
+          onClick={e => {
+            e.preventDefault();
+            setInputStep(2);
+          }}
+        >
+          with Resource Owner Password Credential (not App auth)
+        </a>
+        <br />
+        <a
+          href="#"
+          onClick={e => {
+            e.preventDefault();
+            setInputStep(3);
+          }}
+        >
+          with Authentication form in iframe (App auth)
+        </a>
+        <br />
+        <a
+          href="#"
+          onClick={e => {
+            e.preventDefault();
+            setInputStep(4);
+          }}
+        >
+          with Authentication form in new tab (App auth)
+        </a>
+        <br />
+        <div>
+          [not implemented yet] with Authentication form in this tab (App auth)
+        </div>
+      </>
+    );
+  }
+
   // start ROPC
   return (
     <>
       <h2>AuthPage</h2>
-      <h3>Please Input ROPC info (username/password)</h3>
-      <PersoniumROPCForm cellUrl={config.targetCellUrl} onLogin={handleLogin} />
+      {(() => {
+        switch (inputStep) {
+          case 2:
+            return (
+              <PersoniumROPCForm
+                cellUrl={config.targetCellUrl}
+                onLogin={handleLogin}
+              />
+            );
+          case 3:
+            return (
+              <IFrameAuthPage
+                cellUrl={config.targetCellUrl}
+                onLogin={handleLogin}
+              />
+            );
+          case 4:
+            return (
+              <WindowAuthPage
+                cellUrl={config.targetCellUrl}
+                onLogin={handleLogin}
+              />
+            );
+        }
+      })()}
       <a href="#" onClick={handlePrev}>
         return to cellUrl input
       </a>
