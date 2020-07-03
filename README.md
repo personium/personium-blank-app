@@ -47,6 +47,19 @@ Rename from `src/assets/launch.example.json` to `src/assets/launch.json` and mod
 }
 ```
 
+#### Config: Authentication Setting
+
+Rename from `src/app/engine/auth/acc_info.example.js` to `src/app/engine/auth/acc_info.js` and modify it as below.
+
+```javascript
+  var appCellUrl = '<CELL_URL>'; // for example: https://stg-demo.personium.io/appCellName/ or https://appCellName.stg-demo.personium.io/
+  var appUserId = '***';
+  var appUserPass = '***';
+```
+
+- `<CELL_URL>` reveals URL of App Cell ( scheme + `<CELL_FQDN>` + `/` ).
+- `appUserId` and `appUserPass` are no longer used.
+
 #### Config: Box in User Cell I
 
 Rename from `src/bar/00_meta/00_manifest.example.json` to `src/bar/00_meta/00_manifest.json` and modify it as below.
@@ -105,8 +118,14 @@ npm run deploy
 
 Configurign ACL is conducted manually.
 
-1. Set `exec` to `all(anyone)` in `front` service.
+1. Set `exec` to `all(anyone)` in `front` and `auth` service.
 1. Set `read` to `all(anyone)` in `public` folder.
+
+#### Create Application authentication account
+
+`tokenAcc` account is used for application authentication.
+
+Create an account named `tokenAcc` and set password as you like.
 
 #### Make application specs public
 
