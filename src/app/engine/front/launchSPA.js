@@ -24,13 +24,6 @@ function(request){
       '</body>',
       '</html>',
       ].join('\n')
-      // '<html>'+
-      // '<HEAD><TITLE>SPA</TITLE></HEAD>' +
-      // '<body>' + 
-      // '<div id="root"></div>'+
-      // '<script src="./__/html/js/app.js"></script>'+
-      // '</body>' +
-      // '</html>'
     ],
   };
 }

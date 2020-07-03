@@ -2,8 +2,8 @@ import { useState, useCallback } from 'react';
 import { usePersoniumAuthentication, usePersoniumConfig } from '../Context';
 
 export function usePersoniumBoxInstall(barPath = '__/app.bar', boxName) {
-  const { auth } = usePersoniumAuthentication();
   const { config } = usePersoniumConfig();
+  const { auth } = usePersoniumAuthentication(config.appCellUrl);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [status, setStatus] = useState([]);

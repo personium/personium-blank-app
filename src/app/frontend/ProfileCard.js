@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {
   usePersoniumAuthentication,
   usePersoniumProfile,
+  usePersoniumConfig,
 } from './lib/Personium';
 
 function ProfileImg({ src }) {
@@ -14,7 +15,8 @@ ProfileImg.propTypes = {
 };
 
 export function ProfileCard() {
-  const { auth } = usePersoniumAuthentication();
+  const { config } = usePersoniumConfig();
+  const { auth } = usePersoniumAuthentication(config.appCellUrl);
   const { profile, loading, error } = usePersoniumProfile(auth.p_target);
 
   if (loading) {
