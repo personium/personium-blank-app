@@ -10,7 +10,7 @@ import { useAuthWithIFrame } from './hooks/useAuthWithIFrame';
 export function IFrameAuthPage({ cellUrl, onLogin }) {
   const { config } = usePersoniumConfig();
   const { result, iframeRef } = useAuthWithIFrame();
-  const { authWithCredentials, authWithAuthCode } = usePersoniumAuthentication(
+  const { requestAuthURL, authWithAuthCode } = usePersoniumAuthentication(
     config.appCellUrl
   );
 
@@ -20,11 +20,10 @@ export function IFrameAuthPage({ cellUrl, onLogin }) {
   useEffect(() => {
     console.log(cellUrl);
     setLoading(true);
-    authWithCredentials(cellUrl)
+
+    requestAuthURL(cellUrl, '/__/auth/receive_redirect_page')
       .then(result => {
-        if (result !== null) {
-          setRedirectedUrl(result);
-        }
+        setRedirectedUrl(result);
         setLoading(false);
       })
       .catch(err => {
@@ -34,7 +33,7 @@ export function IFrameAuthPage({ cellUrl, onLogin }) {
     return function cleanup() {
       setLoading(false);
     };
-  }, [authWithCredentials, cellUrl]);
+  }, [requestAuthURL, cellUrl]);
 
   useEffect(() => {
     if (result === null) {

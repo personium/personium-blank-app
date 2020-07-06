@@ -11,8 +11,8 @@ const PersoniumAuthenticationContext = createContext({
 export function usePersoniumAuthentication(appCellUrl) {
   const { auth, setAuth } = useContext(PersoniumAuthenticationContext);
 
-  const authWithCredentials = useCallback(
-    async cellUrl => {
+  const requestAuthURL = useCallback(
+    async (cellUrl, redirect_uri = '/__/auth/receive_redirect') => {
       const authUrl = new URL(`${appCellUrl}__/auth/start_oauth2`);
       authUrl.searchParams.set('cellUrl', cellUrl);
 
@@ -24,6 +24,37 @@ export function usePersoniumAuthentication(appCellUrl) {
         },
       });
 
+      console.log(res.headers);
+
+      if (!res.ok) {
+        throw {
+          status: res.status,
+          statusText: res.statusText,
+        };
+      }
+
+      const oauthFormURL = new URL(res.url);
+      const redirectURI = oauthFormURL.searchParams.get('redirect_uri');
+      const redirectURIobject = new URL(decodeURI(redirectURI));
+      redirectURIobject.pathname = redirect_uri;
+      oauthFormURL.searchParams.set(
+        'redirect_uri',
+        encodeURI(redirectURIobject.toString())
+      );
+      return oauthFormURL;
+    },
+    [appCellUrl]
+  );
+
+  const authWithCredentials = useCallback(
+    async cellUrl => {
+      const oauthFormURL = await requestAuthURL(cellUrl);
+
+      const res = await fetch(oauthFormURL, {
+        credentials: 'include',
+        method: 'GET',
+      });
+
       if (!res.ok) {
         // network error;
         throw {
@@ -32,24 +63,10 @@ export function usePersoniumAuthentication(appCellUrl) {
         };
       }
 
-      if (res.headers.get('Content-Type') !== 'application/json') {
-        // not authorized
-        const oauthFormURL = new URL(res.url);
-        const redirectURI = oauthFormURL.searchParams.get('redirect_uri');
-        const redirectURIobject = new URL(decodeURI(redirectURI));
-        // change redirect_uri
-        redirectURIobject.pathname = '/__/auth/receive_redirect_page';
-        oauthFormURL.searchParams.set(
-          'redirect_uri',
-          encodeURI(redirectURIobject.toString())
-        );
-        return oauthFormURL;
-      }
-
       setAuth(await res.json());
       return null;
     },
-    [setAuth]
+    [setAuth, requestAuthURL]
   );
 
   const authWithAuthCode = useCallback(
@@ -75,7 +92,7 @@ export function usePersoniumAuthentication(appCellUrl) {
       setAuth(await res.json());
       return null;
     },
-    [setAuth]
+    [setAuth, appCellUrl]
   );
 
   const authWithROPC = useCallback(
@@ -110,7 +127,14 @@ export function usePersoniumAuthentication(appCellUrl) {
     return null;
   }, [setAuth]);
 
-  return { auth, authWithCredentials, authWithROPC, authWithAuthCode, logout };
+  return {
+    auth,
+    requestAuthURL,
+    authWithCredentials,
+    authWithROPC,
+    authWithAuthCode,
+    logout,
+  };
 }
 
 export function PersoniumAuthProvider({ children }) {

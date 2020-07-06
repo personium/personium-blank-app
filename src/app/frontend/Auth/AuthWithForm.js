@@ -5,7 +5,7 @@ import {
   usePersoniumConfig,
 } from '../lib/Personium';
 
-function PersoniumROPCForm({ cellUrl, onLogin }) {
+export function FormAuthPage({ cellUrl, onLogin }) {
   const { config } = usePersoniumConfig();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -57,7 +57,7 @@ function PersoniumROPCForm({ cellUrl, onLogin }) {
   );
 }
 
-PersoniumROPCForm.propTypes = {
+FormAuthPage.propTypes = {
   cellUrl: PropTypes.string.isRequired,
   onLogin: PropTypes.func.isRequired,
 };

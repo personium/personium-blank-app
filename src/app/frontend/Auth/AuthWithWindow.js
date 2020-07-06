@@ -11,7 +11,7 @@ import { useAuthWithWindow } from './hooks/useAuthWithWindow';
 export function WindowAuthPage({ cellUrl, onLogin }) {
   const { config } = usePersoniumConfig();
   const { result, openWindow, closeWindow } = useAuthWithWindow();
-  const { authWithCredentials, authWithAuthCode } = usePersoniumAuthentication(
+  const { requestAuthURL, authWithAuthCode } = usePersoniumAuthentication(
     config.appCellUrl
   );
 
@@ -25,11 +25,9 @@ export function WindowAuthPage({ cellUrl, onLogin }) {
   useEffect(() => {
     console.log(cellUrl);
     setLoading(true);
-    authWithCredentials(cellUrl)
+    requestAuthURL(cellUrl, '/__/auth/receive_redirect_page')
       .then(result => {
-        if (result !== null) {
-          setRedirectedUrl(result);
-        }
+        setRedirectedUrl(result);
         setLoading(false);
       })
       .catch(err => {
@@ -39,7 +37,7 @@ export function WindowAuthPage({ cellUrl, onLogin }) {
     return function cleanup() {
       setLoading(false);
     };
-  }, [authWithCredentials, cellUrl]);
+  }, [requestAuthURL, cellUrl]);
 
   useEffect(() => {
     if (result === null) {
