@@ -1,17 +1,23 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import { useLocation, useHistory } from 'react-router-dom';
 
-import { usePersoniumConfig } from '../lib/Personium';
+import {
+  usePersoniumConfig,
+  usePersoniumAuthentication,
+} from '../lib/Personium';
 
 import { UserCellInput } from './UserCellInput';
-import { PersoniumROPCForm } from './ROPCForm';
+
+import { OpenAuthPage } from './AuthWithRedirect';
+import { FormAuthPage } from './AuthWithForm';
 import { IFrameAuthPage } from './AuthWithIFrame';
 import { WindowAuthPage } from './AuthWithWindow';
 
 export function PersoniumAuthPage({ canSkip = true }) {
   const { config, setConfig } = usePersoniumConfig();
+  const { authWithAuthCode } = usePersoniumAuthentication(config.appCellUrl);
   const location = useLocation();
   const history = useHistory();
 
@@ -29,9 +35,33 @@ export function PersoniumAuthPage({ canSkip = true }) {
     history.replace(from);
   }, [location, history]);
 
-  const [inputStep, setInputStep] = useState(
-    canSkip && config.targetCellUrl !== null ? 1 : 0
-  );
+  const [inputStep, setInputStep] = useState(-1);
+
+  const resetInputStep = useCallback(() => {
+    setInputStep(canSkip && config.targetCellUrl !== null ? 1 : 0);
+  }, [canSkip, config.targetCellUrl]);
+
+  useEffect(() => {
+    if (inputStep !== -1) return () => {};
+    //initialize
+    if (config.launchArgs === null) {
+      resetInputStep();
+      return () => {};
+    }
+    const { code, state } = config.launchArgs;
+    if (code === undefined || state === undefined) {
+      resetInputStep();
+      return () => {};
+    }
+    authWithAuthCode(config.targetCellUrl, code, state)
+      .then(() => {
+        handleLogin();
+      })
+      .catch(() => {
+        resetInputStep();
+      });
+    return () => {};
+  });
 
   const handlePrev = useCallback(
     e => {
@@ -89,9 +119,15 @@ export function PersoniumAuthPage({ canSkip = true }) {
           with Authentication form in new tab (App auth)
         </a>
         <br />
-        <div>
-          [not implemented yet] with Authentication form in this tab (App auth)
-        </div>
+        <a
+          href="#"
+          onClick={e => {
+            e.preventDefault();
+            setInputStep(5);
+          }}
+        >
+          with Authentication form in this tab (App auth)
+        </a>
       </>
     );
   }
@@ -104,7 +140,7 @@ export function PersoniumAuthPage({ canSkip = true }) {
         switch (inputStep) {
           case 2:
             return (
-              <PersoniumROPCForm
+              <FormAuthPage
                 cellUrl={config.targetCellUrl}
                 onLogin={handleLogin}
               />
@@ -123,6 +159,8 @@ export function PersoniumAuthPage({ canSkip = true }) {
                 onLogin={handleLogin}
               />
             );
+          case 5:
+            return <OpenAuthPage cellUrl={config.targetCellUrl} />;
         }
       })()}
       <a href="#" onClick={handlePrev}>

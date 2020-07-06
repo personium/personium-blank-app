@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 const defaultConfig = {
   appCellUrl: null,
   targetCellUrl: null,
+  launchArgs: null,
 };
 
 const PersoniumConfigContext = createContext(defaultConfig);
@@ -15,6 +16,7 @@ export function usePersoniumConfig() {
     config: {
       appCellUrl: config.appCellUrl,
       targetCellUrl: config.targetCellUrl,
+      launchArgs: config.launchArgs,
     },
     setConfig: {
       setAppCellUrl: useCallback(
@@ -24,6 +26,10 @@ export function usePersoniumConfig() {
       setTargetCellUrl: useCallback(
         targetCellUrl =>
           setConfig(c => Object.assign({}, c, { targetCellUrl })),
+        [setConfig]
+      ),
+      setLaunchArgs: useCallback(
+        launchArgs => setConfig(c => Object.assign({}, c, { launchArgs })),
         [setConfig]
       ),
       rawSetConfig: setConfig,
