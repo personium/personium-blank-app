@@ -2,8 +2,8 @@ module.exports = {
   personium: {
     CELL_NAME: '<CELL_NAME>',
     CELL_FQDN: '<CELL_FQDN>',
-    CELL_ADMIN: '<ADMIN_USERNAME>',
-    CELL_ADMIN_PASS: '<ADMIN_PASSWORD>',
+    CELL_ADMIN: process.env.PERSONIUM_USER,
+    CELL_ADMIN_PASS: process.env.PERSONIUM_PASS,
     DIRECTORY_MAPPING: [
       {
         filePattern: ['src/app/engine/**/*', '!src/app/engine/**/*.example.*'],
