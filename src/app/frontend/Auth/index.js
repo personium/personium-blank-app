@@ -55,6 +55,9 @@ export function PersoniumAuthPage({ canSkip = true }) {
     }
     authWithAuthCode(config.targetCellUrl, code, state)
       .then(() => {
+        setConfig.setLaunchArgs(
+          Object.assign({}, config.launchArgs, { code: null, state: null })
+        );
         handleLogin();
       })
       .catch(() => {
