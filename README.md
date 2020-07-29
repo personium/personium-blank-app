@@ -91,6 +91,14 @@ npm run build
 
 This command build application into `build` folder.
 
+### Develop and Debug
+
+The following command will start a localhost [webpack](https://webpack.js.org/) sever on port `8080` for application development.
+
+```bash
+npm run debug
+```
+
 ### Deploy
 
 #### Deploying built stuff
