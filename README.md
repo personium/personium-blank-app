@@ -67,7 +67,15 @@ Rename from `src/bar/00_meta/00_manifest.example.json` to `src/bar/00_meta/00_ma
 
 Rename from `src/bar/00_meta/90_rootprops.example.xml` to `src/bar/00_meta/90_rootprops.xml`. ( without modifing )
 
+
+
 ### Build
+
+#### Install Node.js dependencies
+
+```bash
+npm install
+```
 
 #### Building `bar` file
 
