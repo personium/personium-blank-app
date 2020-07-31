@@ -24,13 +24,12 @@ module.exports = {
   personium: {
     CELL_NAME: "<CELL_NAME>", // A name of Application Cell
     CELL_FQDN: "<CELL_FQDN>", // FQDN of Application Cell
-    CELL_ADMIN: "<ADMIN_USERNAME>", // Username of user with admin role.
-    CELL_ADMIN_PASS: "<ADMIN_PASSWORD>", // Password of user with admin role.
     // ...
   },
 };
 ```
 
+- `<CELL_NAME>`, the application Cell's name ( like `app-template` )
 - `<CELL_FQDN>` reveals application cell's FQDN ( like `app-template.demo.personium.io` )
 
 #### Config: Application Cell
@@ -67,7 +66,20 @@ Rename from `src/bar/00_meta/00_manifest.example.json` to `src/bar/00_meta/00_ma
 
 Rename from `src/bar/00_meta/90_rootprops.example.xml` to `src/bar/00_meta/90_rootprops.xml`. ( without modifing )
 
+#### Config: Application Settings
 
+Rename the file from `src/frontend/Constants/AppConstant.example.js` to `src/frontend/Constants/AppConstant.js` and modify its contents as below.
+
+```js
+export const AppConstant = {
+  cellUrl: '<CELL_URL>',
+  installBoxName: '<BOX_NAME>',
+  barFileUrl: '<BAR_FILE_URL>',
+};
+```
+
+- `<BOX_NAME>`, the default target Box name in user Cell. It is often set same as `<CELL_NAME>` typically.
+- `<BAR_FILE_URL>` , the URL of the `bar` file to be built in next step. It is often placed somewhere public in App Cell.
 
 ### Build
 
