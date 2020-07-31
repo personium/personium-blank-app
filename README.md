@@ -9,7 +9,7 @@ This repository contains a template application of Personium and deployment tool
 
 You can make `Personium App` ( not `Apps that uses Personium` ) by extending these codes.
 
-["Personium App" and "Apps that uses Personium"](https://personium.io/docs/en/app-developer/)
+["Personium App" and "Apps that uses Personium"](https://personium.io/docs/en/app-developer/Personium_Apps/)
 
 ## Preaparation for deployment
 
@@ -82,6 +82,12 @@ export const AppConstant = {
 - `<BAR_FILE_URL>` , the URL of the `bar` file to be built in next step. It is often placed somewhere public in App Cell.
 
 ### Build
+
+#### Install Node.js dependencies
+
+```bash
+npm install
+```
 
 #### Building `bar` file
 
