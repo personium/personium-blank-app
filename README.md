@@ -68,7 +68,7 @@ Rename from `src/bar/00_meta/90_rootprops.example.xml` to `src/bar/00_meta/90_ro
 
 #### Config: Application Settings
 
-Rename from `src/frontend/Constants/AppConstant.example.js` to `src/frontend/Constants/AppConstant.js` and modify it as below.
+Rename the file from `src/frontend/Constants/AppConstant.example.js` to `src/frontend/Constants/AppConstant.js` and modify its contents as below.
 
 ```js
 export const AppConstant = {
