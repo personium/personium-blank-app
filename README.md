@@ -79,7 +79,7 @@ export const AppConstant = {
 ```
 
 - `<BOX_NAME>` reveals target Box name in User Cell. It is often set same as `<CELL_NAME>` typically.
-- `<BAR_FILE_URL>` reveals URL placed `bar` file built in next step. It is often placed somewhere public in App Cell.
+- `<BAR_FILE_URL>` , the URL of the `bar` file to be built in next step. It is often placed somewhere public in App Cell.
 
 ### Build
 
