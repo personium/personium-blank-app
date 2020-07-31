@@ -29,7 +29,7 @@ module.exports = {
 };
 ```
 
-- `<CELL_NAME>` reveals application cell's Name ( like `app-template` )
+- `<CELL_NAME>`, the application Cell's name ( like `app-template` )
 - `<CELL_FQDN>` reveals application cell's FQDN ( like `app-template.demo.personium.io` )
 
 #### Config: Application Cell
