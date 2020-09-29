@@ -6,8 +6,11 @@ module.exports = {
     CELL_ADMIN_PASS: process.env.PERSONIUM_PASS,
     DIRECTORY_MAPPING: [
       {
-        filePattern: ['src/app/engine/**/*', '!src/app/engine/**/*.example.*'],
-        srcDir: 'src/app/engine',
+        filePattern: [
+          'src/app/engine/front/*',
+          '!src/app/engine/front/*.example.*',
+        ],
+        srcDir: 'src/app/engine/front',
         dstDir: 'front',
         resourceType: 'service',
         meta: {
