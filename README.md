@@ -147,7 +147,7 @@ PERSONIUM_USER=*** PERSONIUM_PASS=*** npm run deploy
 In Windows,
 
 ```cmd
-set PERSONIUM_USER=*** && set PERSONIUM_USER=*** && npm run deploy
+set PERSONIUM_USER=*** && set PERSONIUM_PASS=*** && npm run deploy
 ```
 
 #### Configure ACL
