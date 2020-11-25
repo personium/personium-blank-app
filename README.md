@@ -152,7 +152,7 @@ set PERSONIUM_USER=*** && set PERSONIUM_PASS=*** && npm run deploy
 
 #### Configure ACL
 
-Configurign ACL is conducted manually in the Unit Manager administration page.
+Configurign ACL is conducted manually in the [Unit Manager](https://github.com/personium/app-uc-unit-manager) administration page.
 
 1. Set `exec` to `all(anyone)` in `front` service.
 1. Set `read` to `all(anyone)` in `public` folder.
