@@ -156,6 +156,7 @@ Configurign ACL is conducted manually in the [Unit Manager](https://github.com/p
 
 1. Set `exec` to `all(anyone)` in `front` service.
 1. Set `read` to `all(anyone)` in `public` folder.
+1. Set `read` to `all(anyone)` in `locales` folder.
 
 #### Make application specs public
 
