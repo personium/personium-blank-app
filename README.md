@@ -177,6 +177,12 @@ Configurign ACL is conducted manually in the [Unit Manager](https://github.com/p
 
 Create an account named `tokenAcc` and set password as you like.
 
+#### Create Application authentication account
+
+`tokenAcc` account is used for application authentication.
+
+Create an account named `tokenAcc` and set password as you like.
+
 #### Make application specs public
 
 Set `read` to `all(anyone)` to below (4 files).
