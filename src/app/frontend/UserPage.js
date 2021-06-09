@@ -1,7 +1,10 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { ProfileCard } from './ProfileCard';
-import { usePersoniumAuthentication } from './lib/Personium';
+import {
+  usePersoniumAuthentication,
+  usePersoniumConfig,
+} from './lib/Personium';
 
 import { useBoxUrl } from './lib/Personium/Context/PersoniumBox';
 import { usePersoniumBoxInstall } from './lib/Personium/Util/usePersoniumBoxInstall';
@@ -78,7 +81,8 @@ function BoxView() {
 }
 
 export function UserPage() {
-  const { logout } = usePersoniumAuthentication();
+  const { config } = usePersoniumConfig();
+  const { logout } = usePersoniumAuthentication(config.appCellUrl);
 
   const handleClick = useCallback(
     e => {

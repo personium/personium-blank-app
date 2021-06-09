@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { HashRouter, Switch, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
 
 import { Top } from './Top';
 import { UserPage } from './UserPage';
@@ -11,8 +11,52 @@ import {
   usePersoniumConfig,
 } from './lib/Personium';
 
-import { PersoniumAuthPage } from './Auth';
+import { PersoniumAuthPage, PersoniumOAuthCallback } from './Auth';
 import { PersoniumBoxProvider } from './lib/Personium/Context/PersoniumBox';
+
+function AppInitializer({ handleInitialized }) {
+  const { setConfig } = usePersoniumConfig();
+
+  useEffect(() => {
+    // Boot Script
+    // const currentHash = location.hash.replace(/^#\/?/g, '#');
+    const currentHash = location.hash;
+
+    let targetCell = null;
+    let launchArgs = {};
+    let nextHash = currentHash.replace(/^#/g, '');
+
+    // load cell parameter from localStorage
+    if (localStorage.getItem('lastLoginCell')) {
+      targetCell = localStorage.getItem('lastLoginCell');
+    }
+
+    // handling cell parameter
+    if (currentHash.startsWith('#cell')) {
+      const hashParams = new URLSearchParams(currentHash.replace(/^#\/?/g, ''));
+      if (hashParams.has('cell')) {
+        targetCell = hashParams.get('cell');
+        hashParams.delete('cell');
+      }
+      nextHash = `${hashParams.toString()}`;
+    }
+
+    window.history.replaceState(null, null, location.search + '#' + nextHash);
+
+    setConfig.rawSetConfig(c => {
+      const newState = Object.assign({}, c, {
+        targetCellUrl: targetCell,
+        appCellUrl: AppConstant.cellUrl,
+        launchArgs,
+      });
+      console.log(newState);
+      return newState;
+    });
+    handleInitialized(true);
+  }, [setConfig, handleInitialized]);
+
+  return null;
+}
 
 function AppHeader() {
   return (
@@ -41,44 +85,6 @@ function AppFooter() {
   );
 }
 
-function AppInitializer({ handleInitialized }) {
-  const { setConfig } = usePersoniumConfig();
-
-  useEffect(() => {
-    // Boot Script
-    const currentHash = location.hash.replace(/^#\/?/g, '#');
-
-    let targetCell = null;
-
-    // load cell parameter from localStorage
-    if (localStorage.getItem('lastLoginCell')) {
-      targetCell = localStorage.getItem('lastLoginCell');
-    }
-
-    // handling cell parameter
-    if (currentHash.startsWith('#cell')) {
-      const hashParams = new URLSearchParams(currentHash.replace(/^#\/?/g, ''));
-      if (hashParams.has('cell')) {
-        targetCell = hashParams.get('cell');
-        hashParams.delete('cell');
-      }
-      location.hash = '/';
-    }
-
-    setConfig.rawSetConfig(c => {
-      const newState = Object.assign({}, c, {
-        targetCellUrl: targetCell,
-        appCellUrl: AppConstant.cellUrl,
-      });
-      console.log(newState);
-      return newState;
-    });
-    handleInitialized(true);
-  }, [setConfig, handleInitialized]);
-
-  return null;
-}
-
 export function App() {
   const [initialized, setInitialized] = useState(false);
 
@@ -90,31 +96,38 @@ export function App() {
           <div>Initializing...</div>
         </>
       ) : (
-        <HashRouter>
+        <BrowserRouter basename="/__/front/app">
           <PersoniumAuthProvider>
-            <PersoniumBoxProvider>
-              <AppHeader />
-              <Switch>
-                <Route path="/" exact>
-                  <Top />
-                </Route>
-                <PrivateRoute path="/user" authPath="/login">
-                  <UserPage />
-                </PrivateRoute>
-                <Route path="/login">
-                  <PersoniumAuthPage />
-                </Route>
-                <Route path="*">
-                  <h2>Does not match any Route</h2>
-                  <div>
-                    <Link to="/">Top</Link>
-                  </div>
-                </Route>
-              </Switch>
-              <AppFooter />
-            </PersoniumBoxProvider>
+            <Switch>
+              <Route path="/personium_auth_callback" exact>
+                <PersoniumOAuthCallback />
+              </Route>
+              <Route path="*">
+                <PersoniumBoxProvider>
+                  <AppHeader />
+                  <Switch>
+                    <Route path="/" exact>
+                      <Top />
+                    </Route>
+                    <PrivateRoute path="/user" authPath="/login">
+                      <UserPage />
+                    </PrivateRoute>
+                    <Route path="/login">
+                      <PersoniumAuthPage />
+                    </Route>
+                    <Route path="*">
+                      <h2>Does not match any Route</h2>
+                      <div>
+                        <Link to="/">Top</Link>
+                      </div>
+                    </Route>
+                  </Switch>
+                  <AppFooter />
+                </PersoniumBoxProvider>
+              </Route>
+            </Switch>
           </PersoniumAuthProvider>
-        </HashRouter>
+        </BrowserRouter>
       )}
     </PersoniumConfigProvider>
   );
