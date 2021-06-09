@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { HashRouter, Switch, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
 
 import { Top } from './Top';
 import { UserPage } from './UserPage';
@@ -90,7 +90,7 @@ export function App() {
           <div>Initializing...</div>
         </>
       ) : (
-        <HashRouter>
+        <BrowserRouter basename="/__/front/app">
           <PersoniumAuthProvider>
             <PersoniumBoxProvider>
               <AppHeader />
@@ -114,7 +114,7 @@ export function App() {
               <AppFooter />
             </PersoniumBoxProvider>
           </PersoniumAuthProvider>
-        </HashRouter>
+        </BrowserRouter>
       )}
     </PersoniumConfigProvider>
   );

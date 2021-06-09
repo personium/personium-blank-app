@@ -17,7 +17,7 @@ module.exports = {
           language: 'JavaScript',
           subject: 'tokenAcc',
           endPoints: {
-            app: 'launchSPA.js',
+            '{id: .+?}': 'launchSPA.js',
           },
         },
       },

@@ -29,8 +29,9 @@ module.exports = {
   devServer: {
     contentBase: `${__dirname}/tools`,
     publicPath: '/__/public/',
+    openPage: '__/front/app',
     historyApiFallback: {
-      rewrites: [{ from: '/', to: '/dev_index.html' }],
+      rewrites: [{ from: /^\/__\/front\/app/, to: '/dev_index.html' }],
     },
   },
 };
